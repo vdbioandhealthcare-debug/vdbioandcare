@@ -16,6 +16,9 @@
     <!-- CSS Dependencies & Fonts -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="assets/fontawesome/all.min.css">
+    <!-- Leaflet.js OpenStreetMap API -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 
 <body>
@@ -72,15 +75,16 @@
                 </div>
                 <h1 class="hero-title">Advancing <span>Human, Animal & Plant</span> Healthcare</h1>
                 <p class="hero-desc">
-                    VD Biochem & Healthcare operates under the holistic "One Health Approach". We are currently leading
-                    innovation in high-potency Veterinary Nutraceuticals, livestock nutrition, and bio-health science.
+                    VD Biochem & Healthcare operates under the holistic <strong>"One Health Approach"</strong>,
+                    advancing science-backed solutions across <strong>Human Health, Animal Health & Plant
+                        Health</strong> divisions.
                 </p>
                 <div class="hero-actions">
                     <a href="#products" class="btn btn-accent">
-                        <i class="fa-solid fa-vial"></i> Explore Vet Nutraceuticals
+                        <i class="fa-solid fa-layer-group"></i> Explore Product Portfolio
                     </a>
                     <button class="btn btn-secondary" id="downloadCatalogBtn">
-                        <i class="fa-solid fa-file-arrow-down"></i> Download Product Catalog
+                        <i class="fa-solid fa-file-arrow-down"></i> Download PDF Catalog
                     </button>
                 </div>
 
@@ -102,16 +106,10 @@
 
             <div>
                 <div class="hero-card">
-                    <div class="hero-card-header">
-                        <div class="hero-card-icon"
-                            style="background:#fff; padding:4px; border-radius:10px; width:44px; height:44px;">
-                            <img src="assets/images/logo.png" alt="VD Biochem Logo" class="brand-logo-img">
-                        </div>
-                        <div>
-                            <h4>One Health Pillars</h4>
-                            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">Integrative Bio-Chem Solutions
-                            </p>
-                        </div>
+                    <div class="hero-card-header"
+                        style="background: rgba(255,255,255,0.95); padding: 0.8rem 1.2rem; border-radius: 14px; margin-bottom: 1.25rem;">
+                        <img src="assets/images/brand_full_logo.png" alt="VD Biochem & Healthcare Logo"
+                            style="max-height: 48px; width: auto; object-fit: contain;">
                     </div>
 
                     <div class="one-health-pills">
@@ -241,80 +239,296 @@
             </div>
 
             <div class="product-filters">
-                <button class="filter-btn active" data-filter="all">All Formulations</button>
-                <button class="filter-btn" data-filter="liquid">Liquid Feed</button>
-                <button class="filter-btn" data-filter="bolus">Bolus & Tablets</button>
-                <button class="filter-btn" data-filter="powder">Powders & Minerals</button>
+                <button class="filter-btn active" data-filter="all">All Formulations (10)</button>
+                <button class="filter-btn" data-filter="liquid">Liquid Feed (5)</button>
+                <button class="filter-btn" data-filter="bolus">Gel & Doses (1)</button>
+                <button class="filter-btn" data-filter="powder">Powders & Minerals (4)</button>
             </div>
 
-            <div class="products-grid">
-                <!-- Product 1 -->
-                <div class="product-card" data-category="liquid">
-                    <div class="product-img-box">
-                        <img src="assets/images/image9.png" alt="VitaBoost Vet Syrup">
-                        <span class="product-tag">Best Seller</span>
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-title">VitaBoost Vet Syrup</h3>
-                        <p class="product-desc">High-potency liquid calcium, Vitamin D3, B12 and herbal galactagogues
-                            designed for maximum milk yield and postpartum recovery.</p>
-                        <div class="product-specs">
-                            <div><span>Target Animal:</span> <strong>Dairy Cattle & Livestock</strong></div>
-                            <div><span>Packaging:</span> <strong>1L / 5L Bottles</strong></div>
+            <div class="product-slider-container">
+                <div class="product-slider-wrapper">
+                    <button class="slider-btn slider-prev" id="sliderPrev" aria-label="Previous Product">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <div class="product-slider-viewport">
+                        <div class="products-grid product-slider-track" id="sliderTrack">
+                            <!-- Product 1: VD CAL-GOLD -->
+                            <div class="product-card" data-category="liquid">
+                                <div class="product-img-box">
+                                    <img src="assets/images/calgold.png" alt="VD CAL-GOLD">
+                                    <span class="product-tag">Double Power Calcium</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">VD CAL-GOLD</h3>
+                                    <p class="product-desc">Nutritional suspension with double strength Calcium
+                                        (3500mg), Phosphorus, Vitamin D3 & B12 enriched with Jivanti, Shatavari & Piper
+                                        Longum for peak milk production.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Cow, Buffalo, Goats & Calves</strong>
+                                        </div>
+                                        <div><span>Packaging:</span> <strong>1 Ltr & 5 Ltr Bottles</strong></div>
+                                        <div><span>Dosage:</span> <strong>50ml - 100ml Daily</strong></div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="VD CAL-GOLD"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 2: VD CAL-Gel -->
+                            <div class="product-card" data-category="bolus">
+                                <div class="product-img-box">
+                                    <img src="assets/images/gel.png" alt="VD CAL-Gel">
+                                    <span class="product-tag">Instant Calcium Gel</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">VD CAL-Gel</h3>
+                                    <p class="product-desc">Instant oral calcium gel providing 10,000mg Calcium & 32,000
+                                        I.U. Vitamin D3 per 100g to prevent Milk Fever, assist normal calving & boost
+                                        post-calving milk yield.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Dairy Cattle & Cows</strong></div>
+                                        <div><span>Packaging:</span> <strong>300 gm Bottle</strong></div>
+                                        <div><span>Dosage:</span> <strong>1 Bottle at Calving & Post Calving</strong>
+                                        </div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="VD CAL-Gel"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 3: VD-TONE H -->
+                            <div class="product-card" data-category="liquid">
+                                <div class="product-img-box">
+                                    <img src="assets/images/tone.png" alt="VD-TONE H">
+                                    <span class="product-tag">Productivity Enhancer</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">VD-TONE H</h3>
+                                    <p class="product-desc">High-potency productivity & immunity enhancer syrup
+                                        formulated for under-developed udder, stress management, fertility boost, and
+                                        phagocytosis enhancement.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Poultry & Dairy Livestock</strong>
+                                        </div>
+                                        <div><span>Packaging:</span> <strong>120ml, 250ml, 500ml & 1L</strong></div>
+                                        <div><span>Indications:</span> <strong>Udder Growth, Stress Recovery &
+                                                Vitality</strong></div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="VD-TONE H"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 4: HEPAGUARD-VD -->
+                            <div class="product-card" data-category="liquid">
+                                <div class="product-img-box">
+                                    <img src="assets/images/hepa.png" alt="HEPAGUARD-VD">
+                                    <span class="product-tag">Hepatic & Liver Tonic</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">HEPAGUARD-VD</h3>
+                                    <p class="product-desc">Liquid liver stimulant with Tricholine Citrate, Vitamin
+                                        B-Complex, Kalmegh & Yeast Extract. Protects liver from toxins; recommended
+                                        pre/post deworming.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Cattle, Buffalo, Horses, Sheep &
+                                                Poultry</strong></div>
+                                        <div><span>Packaging:</span> <strong>500ml & 1 Ltr Bottles</strong></div>
+                                        <div><span>Dosage:</span> <strong>50ml Daily (Cattle), 20ml (Calves)</strong>
+                                        </div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="HEPAGUARD-VD"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 5: U-CARE VD -->
+                            <div class="product-card" data-category="liquid">
+                                <div class="product-img-box">
+                                    <img src="assets/images/UCARE.png" alt="U-CARE VD">
+                                    <span class="product-tag">Uterine Cleanser</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">U-CARE VD</h3>
+                                    <p class="product-desc">Specialized uterine cleanser & restorative liquid for
+                                        retained placenta, metritis, endometritis, and promoting fast uterine involution
+                                        for timely next pregnancy.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Ruminants & Dairy Cows</strong></div>
+                                        <div><span>Packaging:</span> <strong>500ml & 1 Ltr Bottles</strong></div>
+                                        <div><span>Indications:</span> <strong>Uterine Health & Progeny
+                                                Readiness</strong></div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="U-CARE VD"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 6: CHELATED VD-MIN FORTE -->
+                            <div class="product-card" data-category="powder">
+                                <div class="product-img-box">
+                                    <img src="assets/images/min.png" alt="CHELATED VD-MIN FORTE">
+                                    <span class="product-tag">Chelated Trace Mineral</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">CHELATED VD-MIN FORTE</h3>
+                                    <p class="product-desc">High-absorption chelated trace mineral mixture enriched with
+                                        Live Yeast & Lactobacillus. Corrects anoestrus, delayed maturity, and optimizes
+                                        breeding productivity.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Cattle, Buffalo, Sheep & Goats</strong>
+                                        </div>
+                                        <div><span>Packaging:</span> <strong>1 Kg & 5 Kg Tubs</strong></div>
+                                        <div><span>Dosage:</span> <strong>30-50g/day (Large), 10-15g/day
+                                                (Small)</strong></div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="CHELATED VD-MIN FORTE"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 7: VD-BOLITE -->
+                            <div class="product-card" data-category="liquid">
+                                <div class="product-img-box">
+                                    <img src="assets/images/bottle.png" alt="VD-BOLITE">
+                                    <span class="product-tag">Instant Energy Booster</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">VD-BOLITE</h3>
+                                    <p class="product-desc">Gluconeogenic energy booster fortified with B-Complex
+                                        vitamins and minerals to deliver instant energy, increase milk fat/components,
+                                        and restore peak milk yield.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Cattle & High Milk Yielders</strong>
+                                        </div>
+                                        <div><span>Packaging:</span> <strong>1 Ltr Bottle</strong></div>
+                                        <div><span>Dosage:</span> <strong>100ml - 200ml Twice Daily</strong></div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="VD-BOLITE"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 8: PREGA-SURE-VD -->
+                            <div class="product-card" data-category="powder">
+                                <div class="product-img-box">
+                                    <img src="assets/images/prega.png" alt="PREGA-SURE-VD">
+                                    <span class="product-tag">Fertility & Calving Care</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">PREGA-SURE-VD</h3>
+                                    <p class="product-desc">"One Calf per Year" fertility supplement formulated with
+                                        high Vitamin A (25 Lac IU), D3, E, Biotin & Folic Acid to induce heat and
+                                        correct silent anoestrus.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Dairy Cattle & Breeding Stock</strong>
+                                        </div>
+                                        <div><span>Packaging:</span> <strong>200 gm Pouch</strong></div>
+                                        <div><span>Dosage:</span> <strong>20g Daily for 10 Days in Anoestrus</strong>
+                                        </div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="PREGA-SURE-VD"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 9: MASTI-TREAT-VD -->
+                            <div class="product-card" data-category="powder">
+                                <div class="product-img-box">
+                                    <img src="assets/images/treat.png" alt="MASTI-TREAT-VD">
+                                    <span class="product-tag">Udder Swelling & Repair</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">MASTI-TREAT-VD</h3>
+                                    <p class="product-desc">Specialized udder swelling treatment & mammary tissue repair
+                                        powder packed with Tri-Sodium Citrate (25g), Vitamin A, E, Selenium &
+                                        Lactobacillus spores.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Cattle & Buffaloes</strong></div>
+                                        <div><span>Packaging:</span> <strong>70 gm Pack</strong></div>
+                                        <div><span>Dosage:</span> <strong>35g Twice Daily for 3-5 Days</strong></div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="MASTI-TREAT-VD"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product 10: RUMEZYME-VD -->
+                            <div class="product-card" data-category="powder">
+                                <div class="product-img-box">
+                                    <img src="assets/images/rumizyme.png" alt="RUMEZYME-VD">
+                                    <span class="product-tag">Herbal Rumen Appetizer</span>
+                                </div>
+                                <div class="product-body">
+                                    <h3 class="product-title">RUMEZYME-VD</h3>
+                                    <p class="product-desc">Herbal digestant, appetite stimulant, and rumen pH
+                                        regulator. Boosts digestive enzymes, protects liver, restores ruminal motility,
+                                        and improves milk yield.</p>
+                                    <div class="product-specs">
+                                        <div><span>Target Animal:</span> <strong>Cattle, Buffalo, Goats, Sheep &
+                                                Poultry</strong></div>
+                                        <div><span>Packaging:</span> <strong>100 gm & 250 gm Packs</strong></div>
+                                        <div><span>Dosage:</span> <strong>10g - 25g Twice Daily with Feed</strong></div>
+                                    </div>
+                                    <div class="product-footer">
+                                        <button class="btn btn-primary inquiry-btn" data-product="RUMEZYME-VD"
+                                            style="width: 100%;">
+                                            <i class="fa-solid fa-envelope"></i> Quick Inquiry
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="product-footer">
-                            <button class="btn btn-primary inquiry-btn" data-product="VitaBoost Vet Syrup"
-                                style="width: 100%;">
-                                <i class="fa-solid fa-envelope"></i> Quick Inquiry
-                            </button>
-                        </div>
                     </div>
+
+                    <button class="slider-btn slider-next" id="sliderNext" aria-label="Next Product">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
 
-                <!-- Product 2 -->
-                <div class="product-card" data-category="powder">
-                    <div class="product-img-box">
-                        <img src="assets/images/image8.png" alt="MineralMax Gold Powder">
-                        <span class="product-tag">Chelated Mineral</span>
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-title">MineralMax Gold Powder</h3>
-                        <p class="product-desc">Comprehensive chelated trace mineral mixture enriched with bio-available
-                            zinc, copper, cobalt, and live yeast culture.</p>
-                        <div class="product-specs">
-                            <div><span>Target Animal:</span> <strong>Cattle, Buffalo & Goats</strong></div>
-                            <div><span>Packaging:</span> <strong>1kg / 5kg Tubs</strong></div>
-                        </div>
-                        <div class="product-footer">
-                            <button class="btn btn-primary inquiry-btn" data-product="MineralMax Gold Powder"
-                                style="width: 100%;">
-                                <i class="fa-solid fa-envelope"></i> Quick Inquiry
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Product 3 -->
-                <div class="product-card" data-category="bolus">
-                    <div class="product-img-box">
-                        <img src="assets/images/image7.png" alt="UteroFit Vet Bolus">
-                        <span class="product-tag">Reproductive Care</span>
-                    </div>
-                    <div class="product-body">
-                        <h3 class="product-title">UteroFit Vet Bolus</h3>
-                        <p class="product-desc">Reproductive health bolus formulated for timely uterine cleansing,
-                            hormonal balance, and enhanced fertility rate in cows.</p>
-                        <div class="product-specs">
-                            <div><span>Target Animal:</span> <strong>Ruminants</strong></div>
-                            <div><span>Packaging:</span> <strong>Box of 10 Strips</strong></div>
-                        </div>
-                        <div class="product-footer">
-                            <button class="btn btn-primary inquiry-btn" data-product="UteroFit Vet Bolus"
-                                style="width: 100%;">
-                                <i class="fa-solid fa-envelope"></i> Quick Inquiry
-                            </button>
-                        </div>
-                    </div>
+                <div class="slider-controls-bar">
+                    <div class="slider-counter" id="sliderCounter">Product 1 of 10</div>
+                    <div class="slider-dots" id="sliderDots"></div>
+                    <button class="slider-autoplay-toggle" id="sliderAutoplayBtn">
+                        <i class="fa-solid fa-pause"></i> <span>Auto Slide</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -414,9 +628,9 @@
                         <div class="download-feat-item"><i class="fa-solid fa-circle-check"></i> Dosage Charts</div>
                         <div class="download-feat-item"><i class="fa-solid fa-circle-check"></i> Company Profile</div>
                     </div>
-                    <button class="btn btn-accent" onclick="document.getElementById('downloadCatalogBtn').click();">
+                    <a href="assets/images/pdf.pdf" download="VD_Biochem_Product_Catalog.pdf" target="_blank" class="btn btn-accent">
                         <i class="fa-solid fa-file-pdf"></i> Download PDF Catalog
-                    </button>
+                    </a>
                 </div>
 
                 <div class="catalog-preview">
@@ -509,12 +723,12 @@
                                 class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                         </div>
-                        <p class="review-text">"Using VitaBoost Syrup on our dairy cattle showed a noticeable
+                        <p class="review-text">"Using VD CAL-GOLD on our dairy cattle showed a noticeable
                             improvement in daily milk yield within 10 days. Exceptional quality!"</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">RP</div>
-                        <div class{reviewer-details}>
+                        <div class="reviewer-details">
                             <h5>Rajesh Patel</h5>
                             <p>Dairy Farm Owner</p>
                         </div>
@@ -528,8 +742,8 @@
                                 class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
                                 class="fa-solid fa-star"></i>
                         </div>
-                        <p class="review-text">"VD Biochem's mineral boluses have great chelated bioavailability. Highly
-                            recommended for repeat breeding issues in livestock."</p>
+                        <p class="review-text">"CHELATED VD-MIN FORTE has great bioavailability. Highly
+                            recommended for repeat breeding and anoestrus issues in livestock."</p>
                     </div>
                     <div class="reviewer-info">
                         <div class="reviewer-avatar">DR</div>
@@ -639,10 +853,67 @@
                         </div>
                     </div>
 
-                    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem; font-size:1.05rem;">Headquarters Location Map
-                    </h4>
-                    <div class="map-container">
-                        <canvas id="mapCanvas"></canvas>
+                    <!-- Headquarters Map & Directions Section -->
+                    <div class="map-section-box" style="margin-top: 1.5rem;">
+                        <div class="map-header-bar">
+                            <div>
+                                <h4 style="font-size:1.1rem; color:var(--primary-dark); margin-bottom:0.25rem;">
+                                    <i class="fa-solid fa-map-location-dot" style="color:var(--accent);"></i>
+                                    Headquarters Location Map
+                                </h4>
+                                <p class="map-address-text"
+                                    style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;">
+                                    <i class="fa-solid fa-location-dot" style="color:var(--primary-light);"></i>
+                                    <strong>VD Biochem HQ:</strong> Dutta Ka Purva, Kaushalpuri, Ayodhya, U.P. - 224001
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Directions Route Search Widget -->
+                        <div class="map-route-bar">
+                            <div class="route-input-group">
+                                <label for="startLocationSelect"
+                                    style="font-size:0.825rem; font-weight:600; color:var(--primary-dark);">
+                                    <i class="fa-solid fa-route" style="color:var(--accent);"></i> Get Directions To HQ:
+                                </label>
+                                <div class="route-input-wrapper">
+                                    <select id="startLocationSelect" class="form-control route-select">
+                                        <option value="user_gps">📍 Use My Current Location (GPS)</option>
+                                        <option value="lucknow" selected>Lucknow, UP (~135 km)</option>
+                                        <option value="gorakhpur">Gorakhpur, UP (~130 km)</option>
+                                        <option value="varanasi">Varanasi, UP (~200 km)</option>
+                                        <option value="kanpur">Kanpur, UP (~230 km)</option>
+                                        <option value="delhi">New Delhi (~680 km)</option>
+                                    </select>
+                                    <button id="getDirectionsBtn" class="btn btn-primary"
+                                        style="padding: 0.5rem 1rem; font-size: 0.85rem; white-space: nowrap;">
+                                        <i class="fa-solid fa-location-arrow"></i> Show Route
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Leaflet Map Div -->
+                        <div class="map-container" style="margin-top: 0.75rem;">
+                            <div id="leafletMap" style="width: 100%; height: 350px; border-radius: 14px; z-index: 1;">
+                            </div>
+                        </div>
+
+                        <!-- Route Information Output Bar -->
+                        <div id="routeInfoBox" class="route-info-box">
+                            <div class="route-info-detail">
+                                <span class="route-badge"><i class="fa-solid fa-road"></i> Distance: <strong
+                                        id="routeDistance">135 km</strong></span>
+                                <span class="route-badge"><i class="fa-solid fa-clock"></i> Est. Time: <strong
+                                        id="routeDuration">2 hrs 45 mins</strong></span>
+                            </div>
+                            <a id="gmapsDirectLink"
+                                href="https://www.google.com/maps/dir/?api=1&destination=26.788,82.198" target="_blank"
+                                class="btn btn-accent"
+                                style="padding: 0.4rem 1rem; font-size: 0.8rem; border-radius: 50px;">
+                                <i class="fa-solid fa-diamond-turn-right"></i> Navigate in Google Maps
+                            </a>
+                        </div>
                     </div>
                 </div>
 
@@ -672,12 +943,20 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="contactSubject">Inquiry Category</label>
+                            <label for="contactSubject">Product / Inquiry Category</label>
                             <select id="contactSubject" name="subject" class="form-control">
-                                <option value="Vet Nutraceuticals">Vet Nutraceuticals</option>
-                                <option value="Distributorship">Distributorship / Dealership</option>
-                                <option value="Human Health">Human Health Products</option>
-                                <option value="Plant Health">Plant Health Products</option>
+                                <option value="VD CAL-GOLD">VD CAL-GOLD (Liquid Calcium)</option>
+                                <option value="VD CAL-Gel">VD CAL-Gel (Instant Calcium Gel)</option>
+                                <option value="VD-TONE H">VD-TONE H (Productivity Syrup)</option>
+                                <option value="HEPAGUARD-VD">HEPAGUARD-VD (Liver Tonic)</option>
+                                <option value="U-CARE VD">U-CARE VD (Uterine Cleanser)</option>
+                                <option value="CHELATED VD-MIN FORTE">CHELATED VD-MIN FORTE (Mineral Powder)</option>
+                                <option value="VD-BOLITE">VD-BOLITE (Energy Booster)</option>
+                                <option value="PREGA-SURE-VD">PREGA-SURE-VD (Fertility Supplement)</option>
+                                <option value="MASTI-TREAT-VD">MASTI-TREAT-VD (Udder Swelling Care)</option>
+                                <option value="RUMEZYME-VD">RUMEZYME-VD (Herbal Rumen Appetizer)</option>
+                                <option value="Distributorship">Distributorship / Dealership Inquiry</option>
+                                <option value="General Inquiry">General Inquiry</option>
                             </select>
                         </div>
 
@@ -789,6 +1068,54 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Product Inquiry</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Floating WhatsApp Quick Contact Widget -->
+    <div class="whatsapp-widget" id="whatsappWidget">
+        <!-- Floating Toggle Button -->
+        <button class="whatsapp-btn" id="whatsappToggleBtn" aria-label="Contact us on WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+            <span class="whatsapp-badge">1</span>
+        </button>
+
+        <!-- WhatsApp Popup Chat Bubble -->
+        <div class="whatsapp-popup" id="whatsappPopup">
+            <div class="whatsapp-popup-header">
+                <div class="whatsapp-header-info">
+                    <img src="assets/images/logo.png" alt="VD Biochem Logo" class="whatsapp-avatar">
+                    <div>
+                        <h5 style="color:#ffffff; margin:0; font-size:0.95rem;">VD Biochem Support</h5>
+                        <p class="online-status" style="margin:0; font-size:0.75rem; color:rgba(255,255,255,0.85);"><span class="status-dot"></span> Online | Replies instantly</p>
+                    </div>
+                </div>
+                <button class="whatsapp-close" id="whatsappCloseBtn" aria-label="Close WhatsApp Chat">&times;</button>
+            </div>
+
+            <div class="whatsapp-popup-body">
+                <div class="chat-message-bubble">
+                    👋 Namaste! Welcome to <strong>VD Biochem & Healthcare</strong>.<br>How can we assist you with our One Health & Vet products today?
+                </div>
+
+                <div class="whatsapp-quick-topics">
+                    <button class="quick-topic-btn" data-msg="Hello VD Biochem! I would like to inquire about your Vet Nutraceutical products.">
+                        🐄 Vet Nutraceutical Inquiry
+                    </button>
+                    <button class="quick-topic-btn" data-msg="Hello VD Biochem! I am interested in Distributorship / Dealership opportunities.">
+                        📦 Distributorship Inquiry
+                    </button>
+                    <button class="quick-topic-btn" data-msg="Hello VD Biochem! Please send me your complete Product Catalog PDF.">
+                        📄 Request PDF Catalog
+                    </button>
+                </div>
+
+                <div class="whatsapp-input-box">
+                    <input type="text" id="whatsappCustomMsg" class="form-control" placeholder="Type message..." value="Hello VD Biochem! I want to inquire about your products.">
+                    <a id="whatsappSendBtn" href="https://wa.me/919554717147?text=Hello%20VD%20Biochem!%20I%20want%20to%20inquire%20about%20your%20products." target="_blank" class="whatsapp-send-link" aria-label="Send on WhatsApp">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 

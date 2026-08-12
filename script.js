@@ -33,27 +33,171 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Product Category Filtering
+    // 2. Product Slider Showcase (One Product at a time) & Filtering
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const productCards = document.querySelectorAll('.product-card');
+    const allCards = Array.from(document.querySelectorAll('.product-card'));
+    const sliderTrack = document.getElementById('sliderTrack');
+    const sliderPrev = document.getElementById('sliderPrev');
+    const sliderNext = document.getElementById('sliderNext');
+    const sliderDots = document.getElementById('sliderDots');
+    const sliderCounter = document.getElementById('sliderCounter');
+    const sliderAutoplayBtn = document.getElementById('sliderAutoplayBtn');
+    const sliderWrapper = document.querySelector('.product-slider-wrapper');
 
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+    let visibleCards = [...allCards];
+    let currentIndex = 0;
+    let autoplayInterval = null;
+    let isAutoplayActive = true;
 
-            const filterValue = btn.getAttribute('data-filter');
+    const updateSlider = (index, animate = true) => {
+        if (visibleCards.length === 0) return;
+        if (index < 0) index = visibleCards.length - 1;
+        if (index >= visibleCards.length) index = 0;
+        currentIndex = index;
 
-            productCards.forEach(card => {
-                const category = card.getAttribute('data-category');
-                if (filterValue === 'all' || category === filterValue) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+        if (sliderTrack) {
+            sliderTrack.style.transition = animate ? 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
+            sliderTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        // Update Counter
+        if (sliderCounter) {
+            sliderCounter.textContent = `Product ${currentIndex + 1} of ${visibleCards.length}`;
+        }
+
+        // Update Dots
+        if (sliderDots) {
+            const dots = sliderDots.querySelectorAll('.slider-dot');
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentIndex);
+            });
+        }
+    };
+
+    const renderDots = () => {
+        if (!sliderDots) return;
+        sliderDots.innerHTML = '';
+        visibleCards.forEach((_, idx) => {
+            const dot = document.createElement('button');
+            dot.className = `slider-dot ${idx === currentIndex ? 'active' : ''}`;
+            dot.setAttribute('aria-label', `Go to product ${idx + 1}`);
+            dot.addEventListener('click', () => {
+                updateSlider(idx);
+                resetAutoplayTimer();
+            });
+            sliderDots.appendChild(dot);
+        });
+    };
+
+    const filterProducts = (filterValue) => {
+        allCards.forEach(card => {
+            const cat = card.getAttribute('data-category');
+            if (filterValue === 'all' || cat === filterValue) {
+                card.style.display = 'grid';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        visibleCards = allCards.filter(card => card.style.display !== 'none');
+        currentIndex = 0;
+        renderDots();
+        updateSlider(0, false);
+    };
+
+    if (filterBtns.length > 0) {
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filterValue = btn.getAttribute('data-filter');
+                filterProducts(filterValue);
             });
         });
-    });
+    }
+
+    if (sliderPrev) {
+        sliderPrev.addEventListener('click', () => {
+            updateSlider(currentIndex - 1);
+            resetAutoplayTimer();
+        });
+    }
+
+    if (sliderNext) {
+        sliderNext.addEventListener('click', () => {
+            updateSlider(currentIndex + 1);
+            resetAutoplayTimer();
+        });
+    }
+
+    // Auto Play Logic
+    const startAutoplay = () => {
+        if (autoplayInterval) clearInterval(autoplayInterval);
+        autoplayInterval = setInterval(() => {
+            if (isAutoplayActive && visibleCards.length > 1) {
+                updateSlider(currentIndex + 1);
+            }
+        }, 4500);
+    };
+
+    const stopAutoplay = () => {
+        if (autoplayInterval) clearInterval(autoplayInterval);
+    };
+
+    const resetAutoplayTimer = () => {
+        if (isAutoplayActive) {
+            startAutoplay();
+        }
+    };
+
+    if (sliderAutoplayBtn) {
+        sliderAutoplayBtn.addEventListener('click', () => {
+            isAutoplayActive = !isAutoplayActive;
+            const icon = sliderAutoplayBtn.querySelector('i');
+            const label = sliderAutoplayBtn.querySelector('span');
+            if (isAutoplayActive) {
+                if (icon) icon.className = 'fa-solid fa-pause';
+                if (label) label.textContent = 'Auto Slide';
+                startAutoplay();
+            } else {
+                if (icon) icon.className = 'fa-solid fa-play';
+                if (label) label.textContent = 'Paused';
+                stopAutoplay();
+            }
+        });
+    }
+
+    if (sliderWrapper) {
+        sliderWrapper.addEventListener('mouseenter', () => {
+            if (isAutoplayActive) stopAutoplay();
+        });
+        sliderWrapper.addEventListener('mouseleave', () => {
+            if (isAutoplayActive) startAutoplay();
+        });
+
+        // Touch Swipe Support
+        let touchStartX = 0;
+        let touchEndX = 0;
+        sliderWrapper.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        sliderWrapper.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 50) {
+                updateSlider(currentIndex + 1);
+                resetAutoplayTimer();
+            } else if (touchEndX - touchStartX > 50) {
+                updateSlider(currentIndex - 1);
+                resetAutoplayTimer();
+            }
+        }, { passive: true });
+    }
+
+    // Initial Setup
+    renderDots();
+    updateSlider(0, false);
+    startAutoplay();
 
     // 3. FAQ Accordion Toggle
     const faqItems = document.querySelectorAll('.faq-item');
@@ -172,116 +316,154 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     };
 
-    // 7. Interactive Map API Canvas Simulation
-    const mapCanvas = document.getElementById('mapCanvas');
-    if (mapCanvas) {
-        const ctx = mapCanvas.getContext('2d');
-        const drawMap = () => {
-            const w = mapCanvas.width = mapCanvas.parentElement.clientWidth;
-            const h = mapCanvas.height = mapCanvas.parentElement.clientHeight;
+    // 7. Interactive Leaflet OpenStreetMap API & HQ Route Finder
+    const leafletMapDiv = document.getElementById('leafletMap');
+    if (leafletMapDiv && typeof L !== 'undefined') {
+        const hqCoords = [26.7880, 82.1980]; // Ayodhya, UP
 
-            // Background grid map simulation
-            ctx.fillStyle = '#0e2019';
-            ctx.fillRect(0, 0, w, h);
+        // Initialize Map
+        const map = L.map('leafletMap', {
+            center: hqCoords,
+            zoom: 12,
+            scrollWheelZoom: false
+        });
 
-            // Draw grid lines
-            ctx.strokeStyle = 'rgba(16, 185, 129, 0.15)';
-            ctx.lineWidth = 1;
-            for (let x = 0; x < w; x += 30) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, h);
-                ctx.stroke();
-            }
-            for (let y = 0; y < h; y += 30) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(w, y);
-                ctx.stroke();
-            }
+        // OpenStreetMap Tile Layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors | VD Biochem HQ'
+        }).addTo(map);
 
-            // Draw roads/routes simulation
-            ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(0, h * 0.5);
-            ctx.quadraticCurveTo(w * 0.4, h * 0.4, w, h * 0.7);
-            ctx.stroke();
+        // Custom Icon for HQ Marker
+        const hqIcon = L.divIcon({
+            className: 'hq-map-marker',
+            html: `<div style="background: #0f4c3a; color: #10b981; border: 2px solid #10b981; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.4); font-size: 18px;"><i class="fa-solid fa-building"></i></div>`,
+            iconSize: [38, 38],
+            iconAnchor: [19, 38],
+            popupAnchor: [0, -38]
+        });
 
-            ctx.beginPath();
-            ctx.moveTo(w * 0.5, 0);
-            ctx.quadraticCurveTo(w * 0.52, h * 0.6, w * 0.3, h);
-            ctx.stroke();
+        // Add Marker
+        const hqMarker = L.marker(hqCoords, { icon: hqIcon }).addTo(map);
+        hqMarker.bindPopup(`
+            <div class="hq-popup-card">
+                <h5>VD Biochem & Healthcare</h5>
+                <p><strong>HQ:</strong> Dutta Ka Purva, Kaushalpuri, Ayodhya, U.P. - 224001</p>
+                <p><i class="fa-solid fa-phone"></i> +91 9554717147</p>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=26.7880,82.1980" target="_blank" class="popup-btn">
+                    <i class="fa-solid fa-diamond-turn-right"></i> Navigate Here
+                </a>
+            </div>
+        `).openPopup();
 
-            // Center Pin Marker
-            const pinX = w * 0.5;
-            const pinY = h * 0.45;
-
-            // Glowing pulse
-            ctx.fillStyle = 'rgba(132, 204, 22, 0.3)';
-            ctx.beginPath();
-            ctx.arc(pinX, pinY, 20, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Pin head
-            ctx.fillStyle = '#10b981';
-            ctx.beginPath();
-            ctx.arc(pinX, pinY, 10, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 11px Outfit, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('VD BIOCHEM HQ', pinX, pinY - 15);
+        // Preset Locations Coordinates & Distances
+        const cityPresets = {
+            lucknow: { lat: 26.8467, lng: 80.9462, name: 'Lucknow', dist: '135 km', duration: '2 hrs 45 mins' },
+            gorakhpur: { lat: 26.7606, lng: 83.3732, name: 'Gorakhpur', dist: '130 km', duration: '2 hrs 30 mins' },
+            varanasi: { lat: 25.3176, lng: 82.9739, name: 'Varanasi', dist: '200 km', duration: '4 hrs 15 mins' },
+            kanpur: { lat: 26.4499, lng: 80.3319, name: 'Kanpur', dist: '230 km', duration: '4 hrs 30 mins' },
+            delhi: { lat: 28.6139, lng: 77.2090, name: 'New Delhi', dist: '680 km', duration: '9 hrs 30 mins' }
         };
 
-        drawMap();
-        window.addEventListener('resize', drawMap);
+        let activeRouteLayer = null;
+        let activeStartMarker = null;
+
+        const drawRoute = (startLat, startLng, startName, distanceText, durationText) => {
+            if (activeRouteLayer) map.removeLayer(activeRouteLayer);
+            if (activeStartMarker) map.removeLayer(activeStartMarker);
+
+            // Draw Start Marker
+            const startIcon = L.divIcon({
+                className: 'start-map-marker',
+                html: `<div style="background: #10b981; color: #ffffff; border: 2px solid #ffffff; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-size: 14px;"><i class="fa-solid fa-location-dot"></i></div>`,
+                iconSize: [30, 30],
+                iconAnchor: [15, 30]
+            });
+
+            activeStartMarker = L.marker([startLat, startLng], { icon: startIcon }).addTo(map);
+            activeStartMarker.bindPopup(`<b>Starting Point:</b> ${startName}`);
+
+            // Draw Route Polyline
+            const latlngs = [[startLat, startLng], hqCoords];
+            activeRouteLayer = L.polyline(latlngs, {
+                color: '#10b981',
+                weight: 5,
+                opacity: 0.85,
+                dashArray: '8, 8'
+            }).addTo(map);
+
+            // Fit Map Bounds
+            const bounds = L.latLngBounds([[startLat, startLng], hqCoords]);
+            map.fitBounds(bounds, { padding: [50, 50] });
+
+            // Update UI Text
+            const distanceElem = document.getElementById('routeDistance');
+            const durationElem = document.getElementById('routeDuration');
+            const gmapsLink = document.getElementById('gmapsDirectLink');
+
+            if (distanceElem) distanceElem.textContent = distanceText;
+            if (durationElem) durationElem.textContent = durationText;
+            if (gmapsLink) {
+                gmapsLink.href = `https://www.google.com/maps/dir/?api=1&origin=${startLat},${startLng}&destination=26.7880,82.1980`;
+            }
+        };
+
+        const getDirectionsBtn = document.getElementById('getDirectionsBtn');
+        const startLocationSelect = document.getElementById('startLocationSelect');
+
+        const calculateAndShowDirections = () => {
+            const selectedVal = startLocationSelect ? startLocationSelect.value : 'lucknow';
+
+            if (selectedVal === 'user_gps') {
+                if (navigator.geolocation) {
+                    showToast('Fetching your GPS coordinates...', 'info');
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            const userLat = position.coords.latitude;
+                            const userLng = position.coords.longitude;
+                            drawRoute(userLat, userLng, 'Your Current Location', 'Direct GPS Route', 'Calculating...');
+                            showToast('Route to HQ displayed on map!', 'success');
+                        },
+                        (error) => {
+                            showToast('GPS access denied. Showing Lucknow route instead.', 'info');
+                            const city = cityPresets.lucknow;
+                            drawRoute(city.lat, city.lng, city.name, city.dist, city.duration);
+                        }
+                    );
+                } else {
+                    showToast('Geolocation not supported by your browser.', 'info');
+                }
+            } else if (cityPresets[selectedVal]) {
+                const city = cityPresets[selectedVal];
+                drawRoute(city.lat, city.lng, city.name, city.dist, city.duration);
+                showToast(`Showing route from ${city.name} to HQ!`, 'success');
+            }
+        };
+
+        if (getDirectionsBtn) {
+            getDirectionsBtn.addEventListener('click', calculateAndShowDirections);
+        }
+
+        // Draw Default Route (Lucknow) on load
+        drawRoute(cityPresets.lucknow.lat, cityPresets.lucknow.lng, cityPresets.lucknow.name, cityPresets.lucknow.dist, cityPresets.lucknow.duration);
     }
 
-    // 8. Catalog PDF Download Simulator
+    // 8. Catalog PDF Download Handler
     const downloadCatalogBtn = document.getElementById('downloadCatalogBtn');
     if (downloadCatalogBtn) {
         downloadCatalogBtn.addEventListener('click', (e) => {
             e.preventDefault();
 
-            // Generate catalog text file representing technical product catalog
-            const catalogContent = `=====================================================
-VD BIOCHEM & HEALTHCARE - OFFICIAL PRODUCT CATALOG (2026)
-One Health Approach: Human, Animal & Plant Health
-Established Since 2023
-Email: vdbiochemhealthcare@gmail.com
-=====================================================
-
-ABOUT US:
-VD Biochem & Healthcare specializes in premier Veterinary Nutraceuticals,
-livestock nutritional supplements, and advanced bio-chemical solutions.
-
-VET NUTRACEUTICAL PRODUCTS:
-1. VitaBoost Vet Liquid Supplement
-   - Application: Cattle, Poultry & Pets
-   - Key Benefits: High Potency Calcium, Vitamins D3 & B12 for peak milk yield.
-
-2. MineralMax Bolus Formula
-   - Application: Dairy Ruminants
-   - Key Benefits: Chelated Trace Minerals for fertility and immune health.
-
-3. BioNutri Plant Growth Enhancer
-   - Application: Agricultural crops & horticulture
-   - Key Benefits: Bio-organic root activator and enzyme builder.
-
-For inquiries and distribution requests:
-Contact: vdbiochemhealthcare@gmail.com
-=====================================================`;
-
-            const blob = new Blob([catalogContent], { type: 'text/plain;charset=utf-8' });
+            const pdfUrl = 'assets/images/pdf.pdf';
             const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'VDBiochem_Product_Catalog_2026.txt';
+            link.href = pdfUrl;
+            link.download = 'VD_Biochem_Product_Catalog.pdf';
+            link.target = '_blank';
+            document.body.appendChild(link);
             link.click();
-            URL.revokeObjectURL(link.href);
+            document.body.removeChild(link);
 
-            showToast('Downloading VD Biochem Product Catalog!', 'success');
+            showToast('Downloading official VD Biochem Product Catalog (PDF)...', 'success');
         });
     }
 
@@ -311,4 +493,74 @@ Contact: vdbiochemhealthcare@gmail.com
             }
         });
     });
+
+    // 10. Floating WhatsApp Quick Contact Controller
+    const whatsappToggleBtn = document.getElementById('whatsappToggleBtn');
+    const whatsappPopup = document.getElementById('whatsappPopup');
+    const whatsappCloseBtn = document.getElementById('whatsappCloseBtn');
+    const whatsappCustomMsg = document.getElementById('whatsappCustomMsg');
+    const whatsappSendBtn = document.getElementById('whatsappSendBtn');
+    const quickTopicBtns = document.querySelectorAll('.quick-topic-btn');
+    const whatsappBadge = document.querySelector('.whatsapp-badge');
+
+    const whatsappPhone = '919554717147'; // Official VD Biochem Customer Care WhatsApp
+
+    const updateWhatsappLink = (msgText) => {
+        if (!whatsappSendBtn) return;
+        const encodedMsg = encodeURIComponent(msgText || 'Hello VD Biochem! I want to inquire about your products.');
+        whatsappSendBtn.href = `https://wa.me/${whatsappPhone}?text=${encodedMsg}`;
+    };
+
+    if (whatsappToggleBtn && whatsappPopup) {
+        whatsappToggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isActive = whatsappPopup.classList.toggle('active');
+            if (isActive && whatsappBadge) {
+                whatsappBadge.style.display = 'none';
+            }
+        });
+    }
+
+    if (whatsappCloseBtn && whatsappPopup) {
+        whatsappCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            whatsappPopup.classList.remove('active');
+        });
+    }
+
+    // Close popup on outside click
+    document.addEventListener('click', (e) => {
+        if (whatsappPopup && whatsappPopup.classList.contains('active')) {
+            if (!whatsappPopup.contains(e.target) && !whatsappToggleBtn.contains(e.target)) {
+                whatsappPopup.classList.remove('active');
+            }
+        }
+    });
+
+    if (whatsappCustomMsg) {
+        whatsappCustomMsg.addEventListener('input', (e) => {
+            updateWhatsappLink(e.target.value);
+        });
+    }
+
+    if (quickTopicBtns.length > 0) {
+        quickTopicBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const topicMsg = btn.getAttribute('data-msg');
+                if (whatsappCustomMsg) {
+                    whatsappCustomMsg.value = topicMsg;
+                }
+                updateWhatsappLink(topicMsg);
+                // Trigger send redirect directly
+                if (whatsappSendBtn) {
+                    whatsappSendBtn.click();
+                }
+            });
+        });
+    }
+
+    // Initial WhatsApp link setup
+    if (whatsappCustomMsg) {
+        updateWhatsappLink(whatsappCustomMsg.value);
+    }
 });
